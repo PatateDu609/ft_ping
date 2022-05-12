@@ -27,43 +27,21 @@ void *ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-int ft_isalnum(char c)
+void *ft_memcpy(void *dst, void *src, size_t n)
 {
-	return ('a' <= c && c <= 'z') ||
-		   ('A' <= c && c <= 'Z') ||
-		   ('0' <= c && c <= '9');
-}
+	size_t i;
+	char *d;
+	char *s;
 
-int ft_tolower(char c)
-{
-	if ('A' <= c && c <= 'Z')
-		return c + 32;
-	return c;
-}
-
-static char *strdup_alpha(char *s)
-{
-	size_t len = ft_strlen(s);
-	char *str = malloc(len * sizeof(char));
-	size_t j = 0;
-
-	if (!str)
-		return s;
-	for (size_t i = 0; i < len; i++)
-		if (ft_isalnum(s[i]))
-			str[j++] = ft_tolower(s[i]);
-	str[j] = 0;
-	return str;
-}
-
-int ft_strcmp_alpha(char *s1, char *s2)
-{
-	char *sa1 = strdup_alpha(s1);
-	char *sa2 = strdup_alpha(s2);
-	int ret = ft_strcmp(sa1, sa2);
-	free(sa1);
-	free(sa2);
-	return ret;
+	d = dst;
+	s = src;
+	i = 0;
+	while (i < n)
+	{
+		d[i] = s[i];
+		i++;
+	}
+	return (dst);
 }
 
 int ft_strncmp(char *s1, char *s2, size_t n)

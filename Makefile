@@ -22,6 +22,10 @@ BASENAME			:=	main.c							\
 						options/parse_args.c			\
 						options/print_flags.c			\
 						utils/string.c					\
+						utils/random.c					\
+						core/ping.c						\
+						core/setup.c					\
+						core/ft_cksum.c					\
 
 SRCS				:=	$(addprefix $(PATH_SRCS)/, $(BASENAME))
 OBJS				:=	$(addprefix $(PATH_OBJS)/, $(BASENAME:%.c=%.o))

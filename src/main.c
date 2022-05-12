@@ -2,6 +2,7 @@
 #include "ft_getopt.h"
 #include "utils.h"
 #include "ft_ping.h"
+#include "random.h"
 
 void print_help(t_args *args)
 {
@@ -28,6 +29,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	init_pcg_state();
 	ping(arg_opt);
 
 	return 0;

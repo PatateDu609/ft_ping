@@ -13,8 +13,7 @@ static struct addrinfo *resolve_addr(char *name)
 	hint.ai_protocol = 0;
 	hint.ai_socktype = 0;
 
-	int r = getaddrinfo(name, NULL, &hint, &res);
-	printf("getaddrinfo res = %d\n", r);
+	getaddrinfo(name, NULL, &hint, &res);
 	return res;
 }
 
@@ -27,4 +26,8 @@ void ping(t_args *args)
 
 	data->args = args;
 	data->infos = resolve_addr(args->args[0]);
+	data->size = 56;
+	data->seq = 0;
+	__ping(data);
+	free(data);
 }
