@@ -1,5 +1,6 @@
 #include "ft_ping.h"
 #include <stdio.h>
+#include <unistd.h>
 
 static void print_init(char *name, char *ip, size_t size)
 {
@@ -17,6 +18,10 @@ void setup(t_data *data)
 
 	inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 	name = data->infos->ai_canonname ? data->infos->ai_canonname : "";
+
+	data->sock = socket(AF_INET, getuid() ? SOCK_DGRAM : SOCK_RAW, IPPROTO_ICMP);
+	if (data->sock < 0)
+		throw_error("Error creating socket");
 
 	print_init(name, ip, data->size);
 }

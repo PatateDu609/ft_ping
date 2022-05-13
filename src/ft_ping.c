@@ -27,7 +27,7 @@ void ping(t_args *args)
 	data->args = args;
 	data->infos = resolve_addr(args->args[0]);
 	data->size = 56;
-	data->seq = 0;
+	data->seq = 1;
 	__ping(data);
 	free(data);
 }

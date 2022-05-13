@@ -18,13 +18,14 @@ typedef struct s_data
 	struct addrinfo *infos;
 	size_t size;
 	uint16_t seq;
+	int32_t sock;
 } t_data;
 
 typedef struct s_icmp_packet
 {
 	struct icmphdr hdr;
 	char payload[];
-} t_icmp_packet;
+} t_icmp_packet; 
 
 typedef struct s_icmp_packet_reply
 {
