@@ -57,7 +57,7 @@ void send_packet(__attribute_maybe_unused__ int sig)
 				 (const struct sockaddr *)&addr, sizeof(addr));
 	if (ret < 0)
 		warn("Error sending packet");
-	g_data->stat.tx++;
+	inc_tx();
 	free(packet);
 
 	alarm(1);
@@ -107,12 +107,9 @@ static void recv_packet()
 			   local_rtt(g_data->rtt_start));
 		if (reply->hdr.type == ICMP_ECHOREPLY)
 		{
-			if (getuid() || ft_ntohs(reply->hdr.un.echo.id) == ECHO_ID)
-			{
-				g_data->stat.rx++;
-				if (ft_ntohs(reply->hdr.un.echo.sequence) == g_data->seq)
-					g_data->seq++;
-			}
+			update_rx();
+			if (ft_ntohs(reply->hdr.un.echo.sequence) == g_data->seq)
+				g_data->seq++;
 		}
 	}
 }

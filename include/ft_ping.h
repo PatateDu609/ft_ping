@@ -14,6 +14,9 @@
 #define MIN(x, y) (x < y ? x : y)
 #define MAX(x, y) (x < y ? y : x)
 #define ECHO_ID (uint16_t)42
+#define ABS(x) (x < 0 ? -x : x)
+
+#define EWMA_WEIGHT 0.2
 
 void ping(t_args *args);
 void __ping();
@@ -36,5 +39,7 @@ uint16_t ft_htons(uint16_t hostshort);
 uint32_t ft_htonl(uint32_t hostlong);
 uint16_t ft_ntohs(uint16_t netshort);
 uint32_t ft_ntohl(uint32_t netlong);
+
+double ft_sqrt(double x);
 
 #endif

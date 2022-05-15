@@ -4,18 +4,21 @@
 
 static void sigquit()
 {
+	dprintf(1, "\b\b");
 	print_stats(0);
 }
 
 static void sigint()
 {
-	dprintf(1, "\b\b");
+	dprintf(1, "\n");
 	print_stats(1);
 	exit(0);
 }
 
 void ft_sighandler(int sig)
 {
+	if (sig == SIGALRM)
+		return;
 	if (sig == SIGINT)
 		sigint();
 	else if (sig == SIGQUIT)

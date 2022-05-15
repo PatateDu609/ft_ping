@@ -18,7 +18,11 @@ typedef struct s_stat
 {
 	uint32_t tx;
 	uint32_t rx;
-	suseconds_t rtt_total;
+	float rtt_total;
+	float rtt_m_total;
+
+	double rtt_ewma_total;
+	double rtt_ewma_adjust;
 
 	struct
 	{

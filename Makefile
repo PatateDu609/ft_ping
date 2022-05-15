@@ -12,7 +12,7 @@ MKDIR				:=	@mkdir -p
 DEBUG_MODE			:=	0
 
 CFLAGS				:=	-Wall -Werror -Wextra -g3 -gdwarf-2 -fdiagnostics-color=always
-LDFLAGS				:=
+LDFLAGS				:=	-lm
 
 BASENAME			:=	main.c							\
 						endian.c						\
@@ -29,6 +29,7 @@ BASENAME			:=	main.c							\
 						core/ft_cksum.c					\
 						core/signal.c					\
 						core/stats.c					\
+						core/sqrt.c						\
 
 SRCS				:=	$(addprefix $(PATH_SRCS)/, $(BASENAME))
 OBJS				:=	$(addprefix $(PATH_OBJS)/, $(BASENAME:%.c=%.o))
@@ -164,7 +165,7 @@ $(NAME):			$(OBJS)
 					@tput cnorm
 					@echo "Linking $(NAME)..."
 					@$(clear_progress)
-					@$(CC) $(LDFLAGS) $(OBJS) -o $@
+					@$(CC) $(OBJS) -o $@ $(LDFLAGS)
 					@$(clear_progress)
 					@$(clear_line)
 

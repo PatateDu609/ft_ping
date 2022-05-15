@@ -20,7 +20,7 @@ void setup()
 	inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 	name = g_data->infos->ai_canonname ? g_data->infos->ai_canonname : "";
 
-	g_data->sock = socket(AF_INET, getuid() ? SOCK_DGRAM : SOCK_RAW, IPPROTO_ICMP);
+	g_data->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
 	if (g_data->sock < 0)
 		throw_error("Error creating socket");
 
