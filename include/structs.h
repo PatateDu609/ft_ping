@@ -10,7 +10,24 @@
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 
+#include <sys/time.h>
+
 #include "ft_getopt.h"
+
+typedef struct s_stat
+{
+	uint32_t tx;
+	uint32_t rx;
+	suseconds_t rtt_total;
+
+	struct
+	{
+		float min;
+		float max;
+		float avg;
+		float mdev;
+	} rtt;
+} t_stat;
 
 typedef struct s_data
 {
@@ -19,19 +36,18 @@ typedef struct s_data
 	size_t size;
 	uint16_t seq;
 	int32_t sock;
+	struct timeval tv;
+
+	struct timeval rtt_start;
+	t_stat stat;
 } t_data;
 
 typedef struct s_icmp_packet
 {
 	struct icmphdr hdr;
 	char payload[];
-} t_icmp_packet; 
+} t_icmp_packet;
 
-typedef struct s_icmp_packet_reply
-{
-	struct iphdr iphdr;
-	struct icmphdr hdr;
-	char payload[];
-} t_icmp_packet_reply;
+extern t_data *g_data;
 
 #endif

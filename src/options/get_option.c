@@ -2,7 +2,7 @@
 
 static int8_t manage_short_opt(t_option *opts, int nb_opts, char *arg)
 {
-	int8_t flags;
+	int8_t flags = 0;
 
 	for (int i = 1; arg[i]; i++)
 	{

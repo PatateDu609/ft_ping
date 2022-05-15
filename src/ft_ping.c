@@ -1,6 +1,7 @@
 #include "ft_ping.h"
 #include <stdio.h>
 
+t_data *g_data = NULL;
 static struct addrinfo *resolve_addr(char *name)
 {
 	struct addrinfo *res;
@@ -19,15 +20,15 @@ static struct addrinfo *resolve_addr(char *name)
 
 void ping(t_args *args)
 {
-	t_data *data = malloc(sizeof(t_data));
+	g_data = malloc(sizeof(t_data));
 
-	if (!data)
+	if (!g_data)
 		throw_error("Allocation failed");
 
-	data->args = args;
-	data->infos = resolve_addr(args->args[0]);
-	data->size = 56;
-	data->seq = 1;
-	__ping(data);
-	free(data);
+	g_data->args = args;
+	g_data->infos = resolve_addr(args->args[0]);
+	g_data->size = 56;
+	g_data->seq = 1;
+	__ping(g_data);
+	free(g_data);
 }

@@ -15,6 +15,7 @@ CFLAGS				:=	-Wall -Werror -Wextra -g3 -gdwarf-2 -fdiagnostics-color=always
 LDFLAGS				:=
 
 BASENAME			:=	main.c							\
+						endian.c						\
 						init_options.c					\
 						throw.c							\
 						ft_ping.c						\
@@ -26,6 +27,8 @@ BASENAME			:=	main.c							\
 						core/ping.c						\
 						core/setup.c					\
 						core/ft_cksum.c					\
+						core/signal.c					\
+						core/stats.c					\
 
 SRCS				:=	$(addprefix $(PATH_SRCS)/, $(BASENAME))
 OBJS				:=	$(addprefix $(PATH_OBJS)/, $(BASENAME:%.c=%.o))
