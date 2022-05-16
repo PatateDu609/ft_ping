@@ -67,6 +67,9 @@ void print_stats(uint8_t full)
 	{
 		long diff = timeval_diff(g_data->tv) / 1000;
 
+		if (diff < 1000)
+			diff = 0;
+
 		printf("--- ping statistics ---\n");
 		printf("%d packets transmitted, %d received%s, %.3g%% packet loss, time %ldms\n",
 			   g_data->stat.tx, g_data->stat.rx, errors, loss, diff);
@@ -75,7 +78,7 @@ void print_stats(uint8_t full)
 		{
 			double mdev = g_data->stat.rtt_total / g_data->stat.rx;
 			g_data->stat.rtt_m_total /= g_data->stat.rx;
-			mdev = ft_sqrt(g_data->stat.rtt_m_total - mdev * mdev) / 1000.f;
+			mdev = ft_sqrt(ABS(g_data->stat.rtt_m_total - mdev * mdev)) / 1000.f;
 
 			printf("rtt min/avg/max/mdev = %.3f/%.3f/%.3f/%.3lf ms\n",
 				   g_data->stat.rtt.min, avg, g_data->stat.rtt.max, mdev);

@@ -9,8 +9,13 @@ void print_help(t_args *args)
 	printf("Usage: ./ft_ping [OPTION]... ADDRESS\n");
 	for (int i = 0; i < args->nb_opt; i++)
 	{
-		printf("-%c, --%s\n", args->options[i].short_name, args->options[i].name);
-		printf("\t%s\n", args->options[i].description);
+		printf("\n");
+		printf("\033[1;31m-%c\033[0m", args->options[i].short_name);
+		if (args->options[i].name)
+			printf(", --%s", args->options[i].name);
+		if (args->options[i].need_value && args->options[i].small_print)
+			printf("\t\033[1;32m%s\033[0m", args->options[i].small_print);
+		printf("\n\t%s\n", args->options[i].description);
 	}
 }
 

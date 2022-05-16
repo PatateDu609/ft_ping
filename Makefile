@@ -164,11 +164,14 @@ all:				$(NAME)
 $(NAME):			$(OBJS)
 					$(init_makefile)
 					@tput cnorm
-					@echo "Linking $(NAME)..."
 					@$(clear_progress)
+					@echo "Linking $(NAME)..."
 					@$(CC) $(OBJS) -o $@ $(LDFLAGS)
 					@$(clear_progress)
 					@$(clear_line)
+
+					@/bin/echo -e "$(COLOR_INFO)Giving raw sockets to $(NAME)...$(CLEAR_COLOR)"
+					@sudo setcap cap_net_raw=ep ./ft_ping
 
 clean:
 					$(RM) -r $(PATH_OBJS)

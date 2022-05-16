@@ -5,6 +5,8 @@ double ft_sqrt(double x)
 {
 	if (x < 0)
 		return (-1);
+	if (x == 0)
+		return (0);
 
 	double pr, vmin, vmax, m;
 

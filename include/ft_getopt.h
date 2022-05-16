@@ -17,6 +17,7 @@ typedef struct s_option
 	int need_value;
 	char *value;
 	char *arg_help;
+	char *small_print;
 	int (*check)(char *);
 } t_option;
 

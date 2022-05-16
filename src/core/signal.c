@@ -1,6 +1,7 @@
 #include "ft_ping.h"
 #include <signal.h>
 #include <stdio.h>
+#include <unistd.h>
 
 static void sigquit()
 {
@@ -15,6 +16,9 @@ static void sigint()
 
 	freeaddrinfo(g_data->infos);
 	free_args(g_data->args);
+
+	close(g_data->sock);
+
 	free(g_data);
 	exit(0);
 }

@@ -39,12 +39,13 @@ typedef struct s_data
 {
 	t_args *args;
 	struct addrinfo *infos;
-	size_t size;
 	uint16_t seq;
 	int32_t sock;
 	struct timeval tv;
 
+	size_t size;
 	uint8_t ttl;
+	ssize_t count;
 
 	struct timeval rtt_start;
 	t_stat stat;

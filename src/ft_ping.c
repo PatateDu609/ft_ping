@@ -52,6 +52,8 @@ static int32_t ft_chk_opt(t_args *args, char opt)
 			switch (opt)
 			{
 			case 't':
+			case 's':
+			case 'c':
 				return ft_atoi(args->options[i].value);
 			}
 		}
@@ -68,9 +70,15 @@ void ping(t_args *args)
 
 	g_data->args = args;
 	g_data->infos = resolve_addr(args->args[0]);
-	g_data->size = 56;
 	g_data->seq = 1;
+
+	g_data->size = ft_chk_opt(args, 's');
 	g_data->ttl = ft_chk_opt(args, 't');
+	g_data->count = ft_chk_opt(args, 'c');
+
 	g_data->ttl = g_data->ttl ? g_data->ttl : 120;
+	g_data->size = g_data->size ? g_data->size : 56;
+	g_data->count = g_data->count ? g_data->count : -1;
+
 	__ping(g_data);
 }

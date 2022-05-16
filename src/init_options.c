@@ -41,11 +41,51 @@ static void init_t(t_option *option)
 	option->arg_help = "Needs an integer to set the TTL.";
 	option->value = NULL;
 	option->flag = OPT_T;
+	option->small_print = "TTL";
+}
+
+static void init_c(t_option *option)
+{
+	option->name = NULL;
+	option->short_name = 'c';
+	option->description = "Set the number of packets to send.";
+	option->need_value = 1;
+	option->check = visint;
+	option->arg_help = "Needs an integer to set the number of packets to send.";
+	option->value = NULL;
+	option->flag = OPT_C;
+	option->small_print = "Count";
+}
+
+static void init_i(t_option *option)
+{
+	option->name = NULL;
+	option->short_name = 'i';
+	option->description = "Set the interval between packets in seconds.";
+	option->need_value = 1;
+	option->check = visint;
+	option->arg_help = "Needs an integer to set the interval between packets in seconds.";
+	option->value = NULL;
+	option->flag = OPT_I;
+	option->small_print = "Interval";
+}
+
+static void init_s(t_option *option)
+{
+	option->name = NULL;
+	option->short_name = 's';
+	option->description = "Set the size of packets.";
+	option->need_value = 1;
+	option->check = visint;
+	option->arg_help = "Needs an integer to set the size of packets.";
+	option->value = NULL;
+	option->flag = OPT_S;
+	option->small_print = "Packetsize";
 }
 
 t_option *init_options(int *nb)
 {
-	*nb = 3;
+	*nb = 6;
 	if (!*nb)
 		return NULL;
 	t_option *options = malloc(sizeof(t_option) * *nb);
@@ -54,6 +94,9 @@ t_option *init_options(int *nb)
 	init_help(&options[0]);
 	init_v(&options[1]);
 	init_t(&options[2]);
+	init_c(&options[3]);
+	init_i(&options[4]);
+	init_s(&options[5]);
 
 	return options;
 }

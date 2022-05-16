@@ -5,6 +5,7 @@
 
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 
 static void generate_payload(char *payload, size_t size)
 {
@@ -75,7 +76,8 @@ void send_packet(__attribute_maybe_unused__ int sig)
 	inc_tx();
 	free(packet);
 
-	alarm(1);
+	if (g_data->count == -1 || g_data->seq - 1 < g_data->count)
+		alarm(1);
 }
 
 static char *get_name(void *addr, char *name, __attribute_maybe_unused__ size_t len)
@@ -153,6 +155,8 @@ void __ping()
 	setup(g_data);
 	send_packet(0);
 
-	while (1)
+	while (g_data->seq - 1 < g_data->count || g_data->count == -1)
 		recv_packet(g_data);
+
+	ft_sighandler(SIGINT);
 }
