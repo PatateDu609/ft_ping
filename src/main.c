@@ -26,6 +26,13 @@ int main(int argc, char **argv)
 	if (!arg_opt || arg_opt == (void *)-1)
 		return 1;
 
+	if (arg_opt->flags & OPT_H)
+	{
+		print_help(arg_opt);
+		free_args(arg_opt);
+		return 0;
+	}
+
 	char *name = arg_opt->args[0];
 
 	if (!name || arg_opt->args[1])
