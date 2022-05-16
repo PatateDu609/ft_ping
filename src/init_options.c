@@ -83,9 +83,22 @@ static void init_s(t_option *option)
 	option->small_print = "Packetsize";
 }
 
+static void init_n(t_option *option)
+{
+	option->name = NULL;
+	option->short_name = 'n';
+	option->description = "Force full numeric output (e.g. no FQDN computation).";
+	option->need_value = 0;
+	option->check = NULL;
+	option->arg_help = NULL;
+	option->value = NULL;
+	option->flag = OPT_N;
+	option->small_print = NULL;
+}
+
 t_option *init_options(int *nb)
 {
-	*nb = 6;
+	*nb = 7;
 	if (!*nb)
 		return NULL;
 	t_option *options = malloc(sizeof(t_option) * *nb);
@@ -97,6 +110,7 @@ t_option *init_options(int *nb)
 	init_c(&options[3]);
 	init_i(&options[4]);
 	init_s(&options[5]);
+	init_n(&options[6]);
 
 	return options;
 }

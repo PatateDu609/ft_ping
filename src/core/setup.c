@@ -3,22 +3,21 @@
 #include <unistd.h>
 #include <signal.h>
 
-static void print_init(char *name, char *ip, size_t size)
+static void print_init(char *name, size_t size)
 {
 	size_t hdr = sizeof(struct icmphdr) + sizeof(struct iphdr);
-	printf("PING %s (%s) %zu(%zu) bytes of data.\n", name, ip, size, size + hdr);
+	printf("PING %s (%s) %zu(%zu) bytes of data.\n", name, g_data->saddr, size, size + hdr);
 }
 
 void setup()
 {
 	char *name;
-	char ip[INET_ADDRSTRLEN];
 	struct sockaddr_in *addr;
 	int on = 1;
 
 	addr = (struct sockaddr_in *)g_data->infos->ai_addr;
 
-	inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+	inet_ntop(AF_INET, &addr->sin_addr, g_data->saddr, INET_ADDRSTRLEN);
 	name = g_data->infos->ai_canonname ? g_data->infos->ai_canonname : "";
 
 	g_data->sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
@@ -34,6 +33,12 @@ void setup()
 
 	ft_memset(&g_data->stat, 0, sizeof(g_data->stat));
 
+	ft_memset(g_data->fqdn, 0, sizeof(g_data->fqdn));
+
+	if (!(g_data->args->flags & OPT_N))
+		getnameinfo(g_data->infos->ai_addr, g_data->infos->ai_addrlen,
+					g_data->fqdn, sizeof(g_data->fqdn), NULL, 0, NI_NAMEREQD);
+
 	gettimeofday(&g_data->tv, NULL);
-	print_init(name, ip, g_data->size);
+	print_init(name, g_data->size);
 }

@@ -82,12 +82,18 @@ void send_packet(__attribute_maybe_unused__ int sig)
 		ft_alarm(g_data->interval);
 }
 
-static char *get_name(void *addr, char *name, __attribute_maybe_unused__ size_t len)
+static void print_packet(struct iovec iov, t_icmp_packet *reply)
 {
-	struct sockaddr_in *a = (struct sockaddr_in *)addr;
+	printf("%zu bytes from ", iov.iov_len);
+	if (g_data->fqdn && *g_data->fqdn)
+		printf("%s (%s)", g_data->fqdn, g_data->saddr);
+	else
+		printf("%s", g_data->saddr);
 
-	inet_ntop(AF_INET, &a->sin_addr, name, INET_ADDRSTRLEN);
-	return name;
+	printf(": icmp_sec=%d ttl=%hhd time=%.1fms\n",
+		   ft_ntohs(reply->hdr.un.echo.sequence),
+		   reply->ip.ttl,
+		   local_rtt(g_data->rtt_start));
 }
 
 static void recv_packet()
@@ -99,7 +105,6 @@ static void recv_packet()
 	struct sockaddr_in addr;
 
 	char buf[total];
-	char name[INET_ADDRSTRLEN];
 
 	ft_memset(&hdr, 0, sizeof(struct msghdr));
 	ft_memset(&iov, 0, sizeof(struct iovec));
@@ -123,12 +128,8 @@ static void recv_packet()
 	if (reply->hdr.type == ICMP_ECHOREPLY)
 	{
 		reply->payload[g_data->size] = 0;
-		printf("%ld bytes from %s: icmp_sec=%d ttl=%hhd time=%.1fms\n",
-			   iov.iov_len,
-			   get_name(hdr.msg_name, name, hdr.msg_namelen),
-			   ft_ntohs(reply->hdr.un.echo.sequence),
-			   reply->ip.ttl,
-			   local_rtt(g_data->rtt_start));
+		print_packet(iov, reply);
+
 		if (reply->hdr.un.echo.id == ft_htons(ECHO_ID) &&
 			reply->hdr.un.echo.sequence == ft_htons(g_data->seq))
 		{
@@ -140,12 +141,11 @@ static void recv_packet()
 	{
 		char *err = get_err_mess(reply->hdr.type);
 		char mes[256];
-		get_name(hdr.msg_name, name, hdr.msg_namelen);
 
 		if (reply->hdr.type == ICMP_TIME_EXCEEDED)
-			sprintf(mes, "_gateway (%s)", name);
+			sprintf(mes, "_gateway (%s)", g_data->saddr);
 		else
-			sprintf(mes, "%s", name);
+			sprintf(mes, "%s", g_data->saddr);
 		printf("From %s: icmp_sec=%hu %s\n", mes, ft_ntohs(reply->hdr.un.echo.sequence), err);
 
 		inc_ex();
