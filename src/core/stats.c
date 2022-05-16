@@ -67,7 +67,7 @@ void print_stats(uint8_t full)
 	{
 		long diff = timeval_diff(g_data->tv) / 1000;
 
-		if (diff < 1000)
+		if (g_data->stat.rx == 1)
 			diff = 0;
 
 		printf("--- ping statistics ---\n");

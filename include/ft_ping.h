@@ -38,4 +38,7 @@ uint32_t ft_ntohl(uint32_t netlong);
 
 double ft_sqrt(double x);
 
+void ft_alarm(int ms);
+void reset_alarm();
+
 #endif

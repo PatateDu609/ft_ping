@@ -76,8 +76,10 @@ void send_packet(__attribute_maybe_unused__ int sig)
 	inc_tx();
 	free(packet);
 
-	if (g_data->count == -1 || g_data->seq - 1 < g_data->count)
-		alarm(1);
+	if (g_data->count != -1 && g_data->seq >= g_data->count)
+		reset_alarm();
+	else if (g_data->seq == 1)
+		ft_alarm(g_data->interval);
 }
 
 static char *get_name(void *addr, char *name, __attribute_maybe_unused__ size_t len)
@@ -153,6 +155,7 @@ static void recv_packet()
 void __ping()
 {
 	setup(g_data);
+
 	send_packet(0);
 
 	while (g_data->seq - 1 < g_data->count || g_data->count == -1)

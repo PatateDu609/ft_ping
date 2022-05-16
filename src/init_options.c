@@ -61,10 +61,10 @@ static void init_i(t_option *option)
 {
 	option->name = NULL;
 	option->short_name = 'i';
-	option->description = "Set the interval between packets in seconds.";
+	option->description = "Set the interval between packets in milliseconds.";
 	option->need_value = 1;
 	option->check = visint;
-	option->arg_help = "Needs an integer to set the interval between packets in seconds.";
+	option->arg_help = "Needs an integer to set the interval between packets in milliseconds.";
 	option->value = NULL;
 	option->flag = OPT_I;
 	option->small_print = "Interval";

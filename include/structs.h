@@ -46,6 +46,7 @@ typedef struct s_data
 	size_t size;
 	uint8_t ttl;
 	ssize_t count;
+	uint16_t interval;
 
 	struct timeval rtt_start;
 	t_stat stat;
