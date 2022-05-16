@@ -26,6 +26,18 @@ static t_icmp_packet *create_packet()
 
 	packet = malloc(total);
 	ft_memset(packet, 0, sizeof(t_icmp_packet) + g_data->size);
+
+	packet->ip.version = 4;
+	packet->ip.ihl = 5;
+	packet->ip.tos = 0;
+	packet->ip.tot_len = ft_htons(total);
+	packet->ip.id = ft_htons(123);
+	packet->ip.frag_off = 0;
+	packet->ip.ttl = g_data->ttl;
+	packet->ip.protocol = IPPROTO_ICMP;
+	packet->ip.saddr = INADDR_ANY;
+	packet->ip.check = 0;
+
 	packet->hdr.type = ICMP_ECHO;
 	packet->hdr.code = 0;
 	packet->hdr.un.echo.id = ft_htons(ECHO_ID);
@@ -35,7 +47,7 @@ static t_icmp_packet *create_packet()
 	ft_memcpy(packet->payload, payload, g_data->size);
 
 	packet->hdr.checksum = 0;
-	packet->hdr.checksum = ft_htons(ft_cksum((unsigned short *)packet, total));
+	packet->hdr.checksum = ft_cksum((unsigned short *)(&packet->hdr), sizeof(struct icmphdr) + g_data->size);
 	return packet;
 }
 
@@ -51,6 +63,9 @@ void send_packet(__attribute_maybe_unused__ int sig)
 	addr.sin_port = 0;
 	info = (struct sockaddr_in *)g_data->infos->ai_addr;
 	addr.sin_addr.s_addr = info->sin_addr.s_addr;
+
+	packet->ip.daddr = addr.sin_addr.s_addr;
+	packet->ip.check = ft_htons(ft_cksum((unsigned short *)&packet->ip, sizeof(packet->ip)));
 
 	gettimeofday(&g_data->rtt_start, NULL);
 	ret = sendto(g_data->sock, packet, total, 0,
@@ -77,13 +92,17 @@ static void recv_packet()
 	struct msghdr hdr;
 	struct iovec iov;
 	size_t total = sizeof(t_icmp_packet) + g_data->size;
+	struct sockaddr_in addr;
+
 	char buf[total];
 	char name[INET_ADDRSTRLEN];
 
 	ft_memset(&hdr, 0, sizeof(struct msghdr));
 	ft_memset(&iov, 0, sizeof(struct iovec));
-	hdr.msg_name = g_data->infos->ai_addr;
-	hdr.msg_namelen = g_data->infos->ai_addrlen;
+
+	ft_memcpy(&addr, g_data->infos->ai_addr, sizeof(struct sockaddr_in));
+	hdr.msg_name = &addr;
+	hdr.msg_namelen = sizeof(struct sockaddr_in);
 	hdr.msg_iov = &iov;
 	hdr.msg_iovlen = 1;
 	hdr.msg_control = NULL;
@@ -96,21 +115,36 @@ static void recv_packet()
 	ret = recvmsg(g_data->sock, &hdr, 0);
 	if (ret < 0)
 		warn("Error receiving packet");
-	else
+	t_icmp_packet *reply = (t_icmp_packet *)buf;
+	if (reply->hdr.type == ICMP_ECHOREPLY)
 	{
-		t_icmp_packet *reply = (t_icmp_packet *)buf;
 		reply->payload[g_data->size] = 0;
-		printf("%ld bytes from %s: icmp_sec=%d time=%.1fms\n",
+		printf("%ld bytes from %s: icmp_sec=%d ttl=%hhd time=%.1fms\n",
 			   iov.iov_len,
 			   get_name(hdr.msg_name, name, hdr.msg_namelen),
-			   g_data->seq,
+			   ft_ntohs(reply->hdr.un.echo.sequence),
+			   reply->ip.ttl,
 			   local_rtt(g_data->rtt_start));
-		if (reply->hdr.type == ICMP_ECHOREPLY)
+		if (reply->hdr.un.echo.id == ft_htons(ECHO_ID) &&
+			reply->hdr.un.echo.sequence == ft_htons(g_data->seq))
 		{
 			update_rx();
-			if (ft_ntohs(reply->hdr.un.echo.sequence) == g_data->seq)
-				g_data->seq++;
+			g_data->seq++;
 		}
+	}
+	else if (reply->hdr.type != ICMP_ECHO)
+	{
+		char *err = get_err_mess(reply->hdr.type);
+		char mes[256];
+		get_name(hdr.msg_name, name, hdr.msg_namelen);
+
+		if (reply->hdr.type == ICMP_TIME_EXCEEDED)
+			sprintf(mes, "_gateway (%s)", name);
+		else
+			sprintf(mes, "%s", name);
+		printf("From %s: icmp_sec=%hu %s\n", mes, ft_ntohs(reply->hdr.un.echo.sequence), err);
+
+		inc_ex();
 	}
 }
 

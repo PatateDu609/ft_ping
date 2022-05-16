@@ -19,6 +19,46 @@ static struct addrinfo *resolve_addr(char *name)
 	return res;
 }
 
+static int32_t ft_atoi(char *str)
+{
+	int32_t res;
+	int32_t sign;
+
+	res = 0;
+	sign = 1;
+	while (*str == ' ')
+		str++;
+	if (*str == '-')
+	{
+		sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		res = res * 10 + *str - '0';
+		str++;
+	}
+	return res * sign;
+}
+
+static int32_t ft_chk_opt(t_args *args, char opt)
+{
+	for (int32_t i = 0; i < args->nb_opt; i++)
+	{
+		if (args->options[i].short_name == opt && args->options[i].need_value)
+		{
+			if (!(args->flags & args->options[i].flag))
+				return 0;
+			switch (opt)
+			{
+			case 't':
+				return ft_atoi(args->options[i].value);
+			}
+		}
+	}
+	return 0;
+}
+
 void ping(t_args *args)
 {
 	g_data = malloc(sizeof(t_data));
@@ -30,5 +70,7 @@ void ping(t_args *args)
 	g_data->infos = resolve_addr(args->args[0]);
 	g_data->size = 56;
 	g_data->seq = 1;
+	g_data->ttl = ft_chk_opt(args, 't');
+	g_data->ttl = g_data->ttl ? g_data->ttl : 120;
 	__ping(g_data);
 }

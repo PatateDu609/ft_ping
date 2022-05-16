@@ -30,6 +30,7 @@ BASENAME			:=	main.c							\
 						core/signal.c					\
 						core/stats.c					\
 						core/sqrt.c						\
+						core/error.c					\
 
 SRCS				:=	$(addprefix $(PATH_SRCS)/, $(BASENAME))
 OBJS				:=	$(addprefix $(PATH_OBJS)/, $(BASENAME:%.c=%.o))

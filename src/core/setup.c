@@ -14,15 +14,18 @@ void setup()
 	char *name;
 	char ip[INET_ADDRSTRLEN];
 	struct sockaddr_in *addr;
+	int on = 1;
 
 	addr = (struct sockaddr_in *)g_data->infos->ai_addr;
 
 	inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 	name = g_data->infos->ai_canonname ? g_data->infos->ai_canonname : "";
 
-	g_data->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
+	g_data->sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	if (g_data->sock < 0)
 		throw_error("Error creating socket");
+	if (setsockopt(g_data->sock, IPPROTO_IP, IP_HDRINCL, &on, sizeof(on)) < 0)
+		throw_error("Error setting socket options");
 
 	if (signal(SIGINT, ft_sighandler) == SIG_ERR ||
 		signal(SIGQUIT, ft_sighandler) == SIG_ERR ||

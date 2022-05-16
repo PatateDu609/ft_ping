@@ -18,6 +18,8 @@ typedef struct s_stat
 {
 	uint32_t tx;
 	uint32_t rx;
+	uint32_t ex;
+
 	float rtt_total;
 	float rtt_m_total;
 
@@ -42,12 +44,15 @@ typedef struct s_data
 	int32_t sock;
 	struct timeval tv;
 
+	uint8_t ttl;
+
 	struct timeval rtt_start;
 	t_stat stat;
 } t_data;
 
 typedef struct s_icmp_packet
 {
+	struct iphdr ip;
 	struct icmphdr hdr;
 	char payload[];
 } t_icmp_packet;

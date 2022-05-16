@@ -16,6 +16,8 @@ void __ping();
 void send_packet(__attribute_maybe_unused__ int sig);
 void setup();
 
+char *get_err_mess(int code);
+
 void throw_error(char *msg);
 void warn(char *msg);
 
@@ -25,6 +27,7 @@ void ft_sighandler(int sig);
 
 float local_rtt(struct timeval rtt_start);
 void inc_tx();
+void inc_ex();
 void update_rx();
 void print_stats(uint8_t full);
 

@@ -22,6 +22,11 @@ void inc_tx()
 	g_data->stat.tx++;
 }
 
+void inc_ex()
+{
+	g_data->stat.ex++;
+}
+
 static double ft_pow(double x, uint32_t y)
 {
 	double res = 1;
@@ -48,30 +53,43 @@ void update_rx()
 
 void print_stats(uint8_t full)
 {
-	int loss = (g_data->stat.tx - g_data->stat.rx) / g_data->stat.tx * 100;
+	float loss = (float)(g_data->stat.tx - g_data->stat.rx) / g_data->stat.tx * 100.f;
 	double avg = (double)g_data->stat.rtt_total / g_data->stat.tx;
+	char errors[64];
 	avg /= 1000.f;
+
+	if (g_data->stat.ex)
+		snprintf(errors, 64, ", +%d errors", g_data->stat.ex);
+	else
+		errors[0] = 0;
 
 	if (full)
 	{
 		long diff = timeval_diff(g_data->tv) / 1000;
-		double mdev = g_data->stat.rtt_total / g_data->stat.tx;
-		g_data->stat.rtt_m_total /= g_data->stat.tx;
-		mdev = ft_sqrt(g_data->stat.rtt_m_total - mdev * mdev) / 1000.f;
 
 		printf("--- ping statistics ---\n");
-		printf("%d packets transmitted, %d received, %d%% packet loss, time %ldms\n",
-			   g_data->stat.tx, g_data->stat.rx, loss, diff);
-		printf("rtt min/avg/max/mdev = %.3f/%.3f/%.3f/%.3lf ms\n",
-			   g_data->stat.rtt.min, avg, g_data->stat.rtt.max, mdev);
+		printf("%d packets transmitted, %d received%s, %.3g%% packet loss, time %ldms\n",
+			   g_data->stat.tx, g_data->stat.rx, errors, loss, diff);
+
+		if (loss < 100)
+		{
+			double mdev = g_data->stat.rtt_total / g_data->stat.rx;
+			g_data->stat.rtt_m_total /= g_data->stat.rx;
+			mdev = ft_sqrt(g_data->stat.rtt_m_total - mdev * mdev) / 1000.f;
+
+			printf("rtt min/avg/max/mdev = %.3f/%.3f/%.3f/%.3lf ms\n",
+				   g_data->stat.rtt.min, avg, g_data->stat.rtt.max, mdev);
+		}
 	}
 	else
 	{
 		double ewma = g_data->stat.rtt_ewma_total / g_data->stat.rtt_ewma_adjust;
 		ewma /= 1000.f;
 
-		printf("%d/%d packets, %d%% loss, ", g_data->stat.tx, g_data->stat.rx, loss);
-		printf("min/avg/ewma/max = %.3f/%.3f/%.3lf/%.3f ms\n",
-			   g_data->stat.rtt.min, avg, ewma, g_data->stat.rtt.max);
+		printf("%d/%d packets, %.3g%% loss, ", g_data->stat.tx, g_data->stat.rx, loss);
+
+		if (loss < 100)
+			printf("min/avg/ewma/max = %.3f/%.3f/%.3lf/%.3f ms\n",
+				   g_data->stat.rtt.min, avg, ewma, g_data->stat.rtt.max);
 	}
 }
