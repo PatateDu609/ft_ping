@@ -1,6 +1,24 @@
 #include "ft_getopt.h"
 
-static int get_size(int ac, char **av, int *s, uint8_t opt)
+int check_opt_value(char *arg, t_option *option, int nb_opt)
+{
+	if (option)
+	{
+		for (int i = 0; i < nb_opt; i++)
+		{
+			if (option[i].short_name == arg[1])
+			{
+				if (option[i].need_value)
+					return 1;
+				else
+					return 0;
+			}
+		}
+	}
+	return -1;
+}
+
+static int get_size(int ac, char **av, int *s, t_option *opt, __attribute_maybe_unused__ int nb_opt)
 {
 	int size = 0;
 
@@ -13,8 +31,14 @@ static int get_size(int ac, char **av, int *s, uint8_t opt)
 		}
 		else if (!*s && av[i][0] == '-')
 		{
-			if (opt)
+			int opt_value = check_opt_value(av[i], opt, nb_opt);
+			if (opt && opt_value == 0)
 				continue;
+			else if (opt_value == 1)
+			{
+				i++;
+				continue;
+			}
 			*s = -1;
 			return -1;
 		}
@@ -30,7 +54,7 @@ static int get_size(int ac, char **av, int *s, uint8_t opt)
 static uint8_t extract_args(int ac, char **av, t_args *args)
 {
 	int s = 0;
-	int size = get_size(ac, av, &s, args->nb_opt > 0);
+	int size = get_size(ac, av, &s, args->options, args->nb_opt);
 
 	if (s == -1)
 	{
@@ -55,7 +79,7 @@ static uint8_t extract_flags(int ac, char **av, t_args *args)
 		return 1;
 	for (int i = 1; i < ac; i++)
 	{
-		int8_t opt = get_option(args->options, args->nb_opt, av[i]);
+		int8_t opt = get_option(args->options, args->nb_opt, av[i], i + 1 < ac ? av[i + 1] : NULL);
 		if (opt == -1)
 		{
 			print_help(args);
