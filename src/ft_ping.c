@@ -14,7 +14,8 @@ static struct addrinfo *resolve_addr(char *name)
 	hint.ai_protocol = 0;
 	hint.ai_socktype = 0;
 
-	getaddrinfo(name, NULL, &hint, &res);
+	if (getaddrinfo(name, NULL, &hint, &res))
+		throw_error("Error resolving address");
 	return res;
 }
 
@@ -30,5 +31,4 @@ void ping(t_args *args)
 	g_data->size = 56;
 	g_data->seq = 1;
 	__ping(g_data);
-	free(g_data);
 }

@@ -29,6 +29,8 @@ void setup()
 		signal(SIGALRM, send_packet) == SIG_ERR)
 		throw_error("Error on signal setup");
 
+	ft_memset(&g_data->stat, 0, sizeof(g_data->stat));
+
 	gettimeofday(&g_data->tv, NULL);
 	print_init(name, ip, g_data->size);
 }

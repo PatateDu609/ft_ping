@@ -95,3 +95,10 @@ t_args *parse_args(int ac, char **av)
 	}
 	return args;
 }
+
+void free_args(t_args *args)
+{
+	free(args->options);
+	free(args->args);
+	free(args);
+}

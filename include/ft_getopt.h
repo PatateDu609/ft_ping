@@ -29,5 +29,6 @@ t_option *init_options(int *nb);
 void print_flags(uint8_t flags, t_option *options);
 t_args *parse_args(int ac, char **av);
 void print_help(t_args *args);
+void free_args(t_args *args);
 
 #endif

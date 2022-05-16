@@ -10,8 +10,12 @@ static void sigquit()
 
 static void sigint()
 {
-	dprintf(1, "\n");
+	printf("\n");
 	print_stats(1);
+
+	freeaddrinfo(g_data->infos);
+	free_args(g_data->args);
+	free(g_data);
 	exit(0);
 }
 
