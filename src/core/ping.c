@@ -52,7 +52,7 @@ static t_icmp_packet *create_packet()
 	return packet;
 }
 
-void send_packet(__attribute_maybe_unused__ int sig)
+void send_packet(__unused int sig)
 {
 	int ret;
 	size_t total = sizeof(t_icmp_packet) + g_data->size;

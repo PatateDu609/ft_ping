@@ -13,7 +13,7 @@
 
 void ping(t_args *args);
 void __ping();
-void send_packet(__attribute_maybe_unused__ int sig);
+void send_packet(__unused int sig);
 void setup();
 
 char *get_err_mess(int code);

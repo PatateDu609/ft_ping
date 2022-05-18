@@ -18,7 +18,7 @@ int check_opt_value(char *arg, t_option *option, int nb_opt)
 	return -1;
 }
 
-static int get_size(int ac, char **av, int *s, t_option *opt, __attribute_maybe_unused__ int nb_opt)
+static int get_size(int ac, char **av, int *s, t_option *opt, int nb_opt)
 {
 	int size = 0;
 
